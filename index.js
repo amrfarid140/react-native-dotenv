@@ -136,7 +136,12 @@ module.exports = (api, options) => {
 
               const binding = path.scope.getBinding(localId)
               for (const refPath of binding.referencePaths) {
-                refPath.replaceWith(t.valueToNode(env[importedId]))
+                try {
+                  refPath.replaceWith(t.valueToNode(env[importedId]))
+                } catch(error) {
+                  refPath.scope.crawl()
+                  refPath.replaceWith(t.valueToNode(env[importedId]))
+                }
               }
             }
           }
